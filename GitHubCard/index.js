@@ -1,9 +1,10 @@
+import axios from 'axios'
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-
+const result = axios.get('https://api.github.com/users/elisan10')
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -11,7 +12,7 @@
 
     Skip to STEP 3.
 */
-
+console.log(result)
 /*
   STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
@@ -49,6 +50,58 @@ const followersArray = [];
       </div>
     </div>
 */
+
+function profileCard({object}){
+  const card = document.createElement('div')
+  const profileImage = document.createElement('img')
+  const cardInfo = document.createElement('div')
+  const profileName = document.createElement('h3')
+  const userName = document.createElement('p')
+  const location = document.createElement('p')
+  const profile = document.createElement('p')
+  const profileLink = document.createElement('a')
+  const followers = document.createElement('p')
+  const following = document.createElement('p')
+  const bio = document.createElement('p')
+
+  card.appendChild(profileImage)
+  card.appendChild(cardInfo)
+  cardInfo.appendChild(profileName)
+  cardInfo.appendChild(userName)
+  cardInfo.appendChild(location)
+  cardInfo.appendChild(profile)
+  cardInfo.appendChild(followers)
+  cardInfo.appendChild(following)
+  cardInfo.appendChild(bio)
+  profile.appendChild(profileLink)
+
+  card.classList.add('card')
+  cardInfo.classList.add('card-info')
+  profileName.classList.add('name')
+  userName.classList.add('username')
+
+  card.textContent = object
+
+  console.log(card)
+  return card
+}
+profileCard()
+
+const cards = document.querySelector('.cards')
+
+axios
+.get('https://api.github.com/users/elisan10')
+.then((response) => {
+  const profileData = response.data
+  profileData.forEach(profile => {
+    const fullProfile = profileCard(profileData)
+    cards.appendChild(fullProfile) 
+  })
+})
+.catch((error) => {
+  console.log('Something went wrong.')
+})
+
 
 /*
   List of LS Instructors Github username's:
