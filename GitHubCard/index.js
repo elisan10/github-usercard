@@ -1,10 +1,10 @@
-import axios from 'axios'
+import axios from "axios";
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-const result = axios.get('https://api.github.com/users/elisan10')
+
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -12,7 +12,7 @@ const result = axios.get('https://api.github.com/users/elisan10')
 
     Skip to STEP 3.
 */
-console.log(result)
+
 /*
   STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
@@ -29,85 +29,130 @@ console.log(result)
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ["spencer-mcguire", "wsu718", "taterntots", "AaronShawnSoler", "lyndsiWilliams"];
+
+// axios
+// .get('https://api.github.com/users/Playtez/followers')
+// .then((response) => {
+//   const user = response.data
+//   user.forEach((user) => {
+//     followersArray.push(user.login)
+//   })
+// })
+// .catch((error) => {
+//   console.log("Error on the followers promise", error)
+// })
+
+// console.log({followersArray})
+
+followersArray.forEach((follower) => {
+  axios
+  .get(`https://api.github.com/users/${follower}`)
+  .then((res) => {
+     profileCard(res.data)
+  })
+  .catch((err) => {
+    console.log('Promise failed, check API', err)
+  })
+})
+
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
-    Using DOM methods and properties, create and return the following markup:
+  Using DOM methods and properties, create and return the following markup:
+  
+  <div class="card">
+  <img src={image url of user} />
+  <div class="card-info">
+  <h3 class="name">{users name}</h3>
+  <p class="username">{users user name}</p>
+  <p>Location: {users location}</p>
+  <p>Profile:
+  <a href={address to users github page}>{address to users github page}</a>
+  </p>
+  <p>Followers: {users followers count}</p>
+  <p>Following: {users following count}</p>
+  <p>Bio: {users bio}</p>
+  </div>
+  </div>
+  */
 
-    <div class="card">
-      <img src={image url of user} />
-      <div class="card-info">
-        <h3 class="name">{users name}</h3>
-        <p class="username">{users user name}</p>
-        <p>Location: {users location}</p>
-        <p>Profile:
-          <a href={address to users github page}>{address to users github page}</a>
-        </p>
-        <p>Followers: {users followers count}</p>
-        <p>Following: {users following count}</p>
-        <p>Bio: {users bio}</p>
-      </div>
-    </div>
-*/
 
-function profileCard({object}){
-  const card = document.createElement('div')
-  const profileImage = document.createElement('img')
-  const cardInfo = document.createElement('div')
-  const profileName = document.createElement('h3')
-  const userName = document.createElement('p')
-  const location = document.createElement('p')
-  const profile = document.createElement('p')
-  const profileLink = document.createElement('a')
-  const followers = document.createElement('p')
-  const following = document.createElement('p')
-  const bio = document.createElement('p')
 
-  card.appendChild(profileImage)
-  card.appendChild(cardInfo)
-  cardInfo.appendChild(profileName)
-  cardInfo.appendChild(userName)
-  cardInfo.appendChild(location)
-  cardInfo.appendChild(profile)
-  cardInfo.appendChild(followers)
-  cardInfo.appendChild(following)
-  cardInfo.appendChild(bio)
-  profile.appendChild(profileLink)
-
-  card.classList.add('card')
-  cardInfo.classList.add('card-info')
-  profileName.classList.add('name')
-  userName.classList.add('username')
-
-  card.textContent = object
-
-  console.log(card)
-  return card
-}
-profileCard()
-
-const cards = document.querySelector('.cards')
+const cards = document.querySelector(".cards");
 
 axios
-.get('https://api.github.com/users/elisan10')
-.then((response) => {
-  const profileData = response.data
-  profileData.forEach(profile => {
-    const fullProfile = profileCard(profileData)
-    cards.appendChild(fullProfile) 
+  .get(
+    "https://api.github.com/users/elisan10"
+    )
+  .then((response) => {
+    console.log(response.data);
+    profileCard(response.data);
   })
-})
-.catch((error) => {
-  console.log('Something went wrong.')
-})
+  .catch((error) => {
+    console.log(error, "error in your request check api");
+  });
 
+function profileCard(object) {
+  
+  const card = document.createElement("div");
+  const profileImage = document.createElement("img");
+  const cardInfo = document.createElement("div");
+  const profileName = document.createElement("h3");
+  const userName = document.createElement("p");
+  const location = document.createElement("p");
+  const profile = document.createElement("p");
+  const profileLink = document.createElement("a");
+  const followers = document.createElement("p");
+  const following = document.createElement("p");
+  const bio = document.createElement("p");
+
+  profileImage.src = object.avatar_url;
+  profileName.textContent = object.name;
+  userName.textContent = object.login;
+  location.textContent = `Location: ${object.location}`;
+  profile.textContent = "Profile:";
+  profileLink.src = object.html_url;
+  followers.textContent = `Followers: ${object.followers}`;
+  following.textContent = `Following: ${object.following}`;
+  bio.textContent = `Bio: ${object.bio}`;
+
+  card.appendChild(profileImage);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(profileName);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+  profile.appendChild(profileLink);
+
+  card.classList.add("card");
+  cardInfo.classList.add("card-info");
+  profileName.classList.add("name");
+  userName.classList.add("username");
+
+  cards.appendChild(card)
+
+  return card;
+}
+
+// const gitHub = data.map((profile) => {
+//   return profileCard(profile)
+// })
+
+// gitHub.forEach((profile) => {
+//   cards.appendChild(profile)
+// })
+
+// console.log(profileCard(data))
 
 /*
-  List of LS Instructors Github username's:
-    tetondan
-    dustinmyers
-    justsml
-    luishrd
-    bigknell
+List of LS Instructors Github username's:
+tetondan
+dustinmyers
+justsml
+luishrd
+bigknell
 */
